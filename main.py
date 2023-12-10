@@ -10,7 +10,7 @@ class TelegramBot():
 		amount_of_messages = len(response['result'])
 		i = amount_of_messages - 1
 		self.update_id = response['result'][i]['update_id']
-		self.chat_id = response['result'][0]['message']['from']['id']
+		self.chat_id = response['result'][i]['message']['from']['id']
 
 	def read_messages(self):
 		read_message_url = f'https://api.telegram.org/bot{self.token}/getUpdates?timeout=100&offset={self.update_id}'
