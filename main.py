@@ -9,8 +9,11 @@ class TelegramBot():
 		response = response.json() # recebe todas as mensagens do chat
 		# print(status_code, response.keys()) # teste
 		# print(response['result'])# teste
-		amount_of_messages = len(response['result'])
-		i = amount_of_messages - 1 # identifica o indice da última mensagem
+		try:
+			amount_of_messages = len(response['result'])
+			i = amount_of_messages - 1 # identifica o indice da última mensagem
+		except:
+			amount_of_messages = 0
 		try:
 			self.update_id = response['result'][i]['update_id'] # captura o update_id da última mensagem
 		except:
