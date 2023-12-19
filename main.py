@@ -7,8 +7,8 @@ class TelegramBot():
 		response = requests.get(init_url)
 		status_code = response.status_code
 		response = response.json() # recebe todas as mensagens do chat
-		print(status_code, response.keys()) # teste
-		print(response['result'])# teste
+		# print(status_code, response.keys()) # teste
+		# print(response['result'])# teste
 		amount_of_messages = len(response['result'])
 		i = amount_of_messages - 1 # identifica o indice da última mensagem
 		try:
@@ -19,16 +19,16 @@ class TelegramBot():
 					
 	def read_messages(self):
 		try:
-			print(f"\nID antes: {self.update_id}")
+			# print(f"\nID antes: {self.update_id}")
 			read_message_url = f'https://api.telegram.org/bot{self.token}/getUpdates?timeout=100&offset={self.update_id}'
 			response = requests.get(read_message_url)
 			response = response.json()		
 			self.text = response['result'][0]['message']['text']
 			
-			print(self.text)
+			# print(self.text)
 			#message_id = response['result'][0]['message']['message_id'] # sequencial de mensagens do cliente
 			self.update_id += 1
-			print(f"ID depois:{self.update_id}")
+			# print(f"ID depois:{self.update_id}")
 		except:
 			pass
 
