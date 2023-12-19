@@ -11,7 +11,10 @@ class TelegramBot():
 		print(response['result'])# teste
 		amount_of_messages = len(response['result'])
 		i = amount_of_messages - 1 # identifica o indice da última mensagem
-		self.update_id = response['result'][i]['update_id'] # captura o update_id da última mensagem
+		try:
+			self.update_id = response['result'][i]['update_id'] # captura o update_id da última mensagem
+		except:
+			self.update_id = response['result'][0]['update_id'] # caso não haja mensagens anteriores
 		self.chat_id = response['result'][0]['message']['from']['id'] # captura o chat_id (quem é o cliente)
 					
 	def read_messages(self):
