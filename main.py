@@ -22,7 +22,8 @@ class TelegramBot():
 			self.chat_id = response['result'][0]['message']['from']['id'] # captura o chat_id (quem é o cliente)
 		except:
 			self.chat_id = 0
-					
+		self.text = ""
+			
 	def read_messages(self):
 		try:
 			# print(f"\nID antes: {self.update_id}")
