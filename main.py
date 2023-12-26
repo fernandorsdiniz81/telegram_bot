@@ -16,7 +16,7 @@ class TelegramBot():
 				self.chat_id = response['result'][0]['message']['from']['id'] # captura o chat_id (quem é o cliente)
 			except:
 				self.update_id = response['result'][0]['update_id'] # caso não haja mensagens anteriores
-				self.chat_id = response['result'][0]['message']['from']['id'] # captura o chat_id (quem é o cliente)
+				# self.chat_id = response['result'][0]['message']['from']['id'] # captura o chat_id (quem é o cliente)
 		self.last_answered_message = None
 
 	def read_messages(self):
