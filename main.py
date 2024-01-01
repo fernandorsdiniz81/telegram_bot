@@ -2,7 +2,8 @@ import requests
 
 class TelegramBot():
 	def __init__(self):
-		self.token = '6776703398:AAGkXWUbHE_ei8gN0Rbsrljps0ygX5WrSrU'
+		# self.token = '6776703398:AAGkXWUbHE_ei8gN0Rbsrljps0ygX5WrSrU' # token antigo
+		self.token = '6260965780:AAH25G6zzU21eBX_Aeqp2GaEPzW8Edb-4vg' # novo token
 		init_url = f'https://api.telegram.org/bot{self.token}/getUpdates?timeout=100'
 		response = requests.get(init_url)
 		status_code = response.status_code
