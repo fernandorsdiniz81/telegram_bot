@@ -1,52 +1,60 @@
 import requests
 
+
 class TelegramBot():
 	def __init__(self):
-		# self.token = '6776703398:AAGkXWUbHE_ei8gN0Rbsrljps0ygX5WrSrU' # token antigo
-		self.token = '6260965780:AAH25G6zzU21eBX_Aeqp2GaEPzW8Edb-4vg' # novo token
-		init_url = f'https://api.telegram.org/bot{self.token}/getUpdates?timeout=100'
-		response = requests.get(init_url)
-		status_code = response.status_code
-		response = response.json() # recebe todas as mensagens do chat
-		# print(response) # teste
-		if 'result' in response:
-			amount_of_messages = len(response['result'])
-			i = amount_of_messages - 1 # identifica o indice da última mensagem
-			try:
-				self.update_id = response['result'][i]['update_id'] # captura o update_id da última mensagem
-				self.chat_id = response['result'][0]['message']['from']['id'] # captura o chat_id (quem é o cliente)
-			except:
-				self.update_id = response['result'][0]['update_id'] # captura o update_id da última mensagem
-				self.chat_id = response['result'][0]['message']['from']['id'] # captura o chat_id (quem é o cliente)
-		self.last_answered_message = None
+		self.token = '6776703398:AAE8zIuXhIaIsmimPkK0I5v-T9iYjZGv1Wc' # Feibot
+		self.initial_url = f'http://api.telegram.org/bot{self.token}/getUpdates?timeout=30'
 
-	def read_messages(self):
-		# print(f"\nID antes: {self.update_id}")
+
+	def get_update_id(self):
+		response = requests.get(self.initial_url)
+		print(f"status code: {response.status_code}")
+		response = response.json()
+		print(f"response: {response}")
+		i = len(response['result']) - 1 if len(response['result']) > 0 else 0
+		print(f"i: {i}\n")
 		try:
-			read_message_url = f'https://api.telegram.org/bot{self.token}/getUpdates?timeout=100&offset={self.update_id}'
+			self.update_id = response['result'][i]['update_id'] # último "update_id" do json
+			return True
+		except Exception as error:
+			print(error)
+		
+		
+	def read_messages(self):
+		try: # tenta buscar uma mensagem com "update_id + 1" para não ficar buscando mensagens antigas
+			read_message_url = f'https://api.telegram.org/bot{self.token}/getUpdates?timeout=30&offset={self.update_id}' #offset é para fazer a request pelo "update_id" ao invés de baixar todo o histórico
 			response = requests.get(read_message_url)
 			response = response.json()
-			if 'result' in response:
-				try: # importante, pois após o timeout, se não houver mensagem nova, haverá erro na request com o update_id que foi incrementado.
-					self.text = response['result'][0]['message']['text'] # o índice sempre será 0 pq a request é pelo update_id
-					# print(self.text)
-					self.message_id = response['result'][0]['message']['message_id'] # sequencial de mensagens do cliente
-					self.update_id += 1
-					# print(f"ID depois:{self.update_id}")
-				except:
-					pass # não executa nada em caso de erro pq a função está no laço while
+			self.update_id = response['result'][0]['update_id'] # sequencial da mensagem do bot, cada "update-id" é uma mensagem, do mesmo cliente ou não
+			self.chat_id = response['result'][0]['message']['from']['id'] # quem é o cliente - identificador único do chat
+			self.first_name = response['result'][0]['message']['from']['first_name'] # primeiro nome do cliente
+			self.message_id = response['result'][0]['message']['message_id'] # sequencial de mensagens do cliente
+			self.text = response['result'][0]['message']['text'] # mensagem do cliente
+			self.update_id += 1
+			print(f"update_id: {self.update_id}\nfirst_name: {self.first_name}\nchat_id: {self.chat_id}\nmessage_id: {self.message_id}\ntext: {self.text}\n")
+			return True
 		except:
-			pass
+			pass # caso não haja mensagem com "update_id+1", o laço "while" continuará buscando pelo mesmo "update_id+1" até encontrar
+
 
 	def answer_messages(self):
-		if self.last_answered_message != self.message_id:
-			answer = f'Ola!! :) Você disse "{self.text}"!'
-			url_para_responder = f'https://api.telegram.org/bot{self.token}/sendMessage?chat_id={self.chat_id}&text={answer}'
-			requests.get(url_para_responder)
-			self.last_answered_message = self.message_id
+		answer = f'Ola {self.first_name}!!! 😃\n Você disse: "{self.text}"!'
+		answer_message_url = f'https://api.telegram.org/bot{self.token}/sendMessage?chat_id={self.chat_id}&text={answer}'
+		requests.get(answer_message_url)
+
+	
+	def run_bot(self):
+		while True:
+			if self.get_update_id():
+				break
+		while True:
+			if self.read_messages():
+				self.answer_messages()
 
 
-bot = TelegramBot()
-while True:
-	bot.read_messages()
-	bot.answer_messages()
+
+######## Excutando o bot #########:
+if __name__ == "__main__":
+	bot = TelegramBot()
+	bot.run_bot()		
