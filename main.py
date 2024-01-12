@@ -1,5 +1,4 @@
 import requests
-import time
 
 
 class TelegramBot():
@@ -57,6 +56,5 @@ class TelegramBot():
 
 ######## Excutando o bot #########:
 if __name__ == "__main__":
-	time.sleep(5)
 	bot = TelegramBot()
 	bot.run_bot()		
