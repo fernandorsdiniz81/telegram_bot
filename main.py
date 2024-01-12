@@ -5,24 +5,23 @@ class TelegramBot():
 	def __init__(self):
 		self.token = '6776703398:AAE8zIuXhIaIsmimPkK0I5v-T9iYjZGv1Wc' # Feibot
 		self.initial_url = f'http://api.telegram.org/bot{self.token}/getUpdates?timeout=30'
-
+		
 
 	def get_update_id(self):
 		response = requests.get(self.initial_url)
-		print(f"status code: {response.status_code}")
 		response = response.json()
 		print(f"response: {response}")
-		i = len(response['result']) - 1 if len(response['result']) > 0 else 0
-		print(f"i: {i}\n")
-		try:
-			self.update_id = response['result'][i]['update_id'] # último "update_id" do json
-			return True
-		except Exception as error:
-			print(error)
+		if len(response) > 0: #significa que há ao menos um "update_id"
+			try:
+				i = len(response['result']) - 1 # if len(response['result']) > 0 else 0
+				self.update_id = response['result'][i]['update_id'] # último "update_id" do json
+				return True
+			except Exception as error:
+				print(error)
 		
 		
 	def read_messages(self):
-		try: # tenta buscar uma mensagem com "update_id + 1" para não ficar buscando mensagens antigas
+		try: 
 			read_message_url = f'https://api.telegram.org/bot{self.token}/getUpdates?timeout=30&offset={self.update_id}' #offset é para fazer a request pelo "update_id" ao invés de baixar todo o histórico
 			response = requests.get(read_message_url)
 			response = response.json()
@@ -31,7 +30,7 @@ class TelegramBot():
 			self.first_name = response['result'][0]['message']['from']['first_name'] # primeiro nome do cliente
 			self.message_id = response['result'][0]['message']['message_id'] # sequencial de mensagens do cliente
 			self.text = response['result'][0]['message']['text'] # mensagem do cliente
-			self.update_id += 1
+			self.update_id += 1 # para tentar buscar a próxima mensagem
 			print(f"update_id: {self.update_id}\nfirst_name: {self.first_name}\nchat_id: {self.chat_id}\nmessage_id: {self.message_id}\ntext: {self.text}\n")
 			return True
 		except:
