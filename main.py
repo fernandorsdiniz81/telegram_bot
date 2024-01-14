@@ -13,7 +13,7 @@ class TelegramBot():
 		print(f"response: {response}")
 		if len(response) > 0: #significa que há ao menos um "update_id"
 			try:
-				i = len(response['result']) - 1 # if len(response['result']) > 0 else 0
+				i = len(response['result']) - 1
 				self.update_id = response['result'][i]['update_id'] # último "update_id" do json
 				return True
 			except Exception as error:
@@ -38,7 +38,7 @@ class TelegramBot():
 
 
 	def answer_messages(self):
-		answer = f'Ola {self.first_name}!!! 😃\n Você disse: "{self.text}"!'
+		answer = f'Olá {self.first_name}!!! 😃\n Você disse: "{self.text}"!'
 		answer_message_url = f'https://api.telegram.org/bot{self.token}/sendMessage?chat_id={self.chat_id}&text={answer}'
 		requests.get(answer_message_url)
 
